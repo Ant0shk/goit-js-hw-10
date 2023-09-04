@@ -9,7 +9,6 @@ import { Loading } from 'notiflix/build/notiflix-loading-aio';
 
 const ref = {
   select: document.querySelector('.breed-select'),
-  // loader: document.querySelector('.loader'),
   error: document.querySelector('.error'),
   catInfo: document.querySelector('.cat-info'),
   catPic: document.querySelector('.cat-info-picture'),
@@ -17,7 +16,7 @@ const ref = {
 };
 
 const cats = new FetchCat();
-// ref.select.addEventListener('change', onChangeSelect);
+ref.select.addEventListener('change', onChangeSelect);
 function renderSelect(breeds) {
   const markup = breeds
     .map(breed => {
@@ -33,13 +32,11 @@ function renderSelect(breeds) {
 }
 
 (function fethBreedsRender() {
-  // ref.loader.classList.remove('visible');
   cats
     .fetchCats()
     .then(breeds => {
       Loading.standard();
       renderSelect(breeds);
-      // console.log(breeds);
       ref.select.addEventListener('change', onChangeSelect);
       Loading.remove();
     })
@@ -47,9 +44,6 @@ function renderSelect(breeds) {
       console.log(error);
       Notify.failure('Oops! Something went wrong! Try reloading the page!');
     });
-  // .finaly(() => {
-  //   ref.loader.classList.add('visible');
-  // });
 })();
 
 function renderDesc(breed) {
@@ -62,31 +56,19 @@ function renderDesc(breed) {
 }
 
 function onChangeSelect(e) {
-  // ref.loader.classList.remove('unvisible');
-  // ref.loader.style.display = 'block';
   Loading.standard();
-  // ref.catPic.innerHTML = '';
-  // ref.catDesc.innerHTML = '';
   const breedId = e.target.value;
-  console.dir(e.target);
   cats
     .fetchCatByBreed(breedId)
     .then(breed => {
       ref.catInfo.style.display = 'block';
       renderDesc(breed);
-      console.log(breed);
       Notify.success('Found the cat!');
-      // ref.loader.style.display = 'none';
       ref.error.style.display = 'none';
       Loading.remove();
     })
     .catch(error => {
-      console.log(error);
       ref.catInfo.style.display = 'none';
       Notify.failure('Oops! Something went wrong! Try reloading the page!');
     });
-  // .finaly(() => {
-  //   // ref.loader.classList.add('unvisible');
-  //   ref.loader.style.display = 'none';
-  // });
 }
